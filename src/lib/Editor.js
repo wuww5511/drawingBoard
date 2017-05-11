@@ -2,17 +2,22 @@ import ActionList from './ActionList'
 import Ele from './Ele'
 import ListData from './ListData'
 import Action from './Action'
+import EventEmitter from 'events'
 
-export default class Editor {
+export default class Editor extends EventEmitter{
   constructor () {
+    super()
     this._actionList = new ActionList()
     this._data = new ListData()
+    this._data.on('change', opts => {
+      this.emit('change', opts)
+    })
   }
 
-  add (data) {
+  add (ele) {
     var action = new Action({
       onexec: data => {
-        data.id = this._data.add(data)
+        data.id = this._data.add(ele)
       },
       onundo: data => {
         this._data.delete(data.id)

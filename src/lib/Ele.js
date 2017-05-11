@@ -15,4 +15,9 @@ export default class Ele {
   update (data) {
     Object.assign(this._data, data)
   }
+
+  // @abstract
+  paint (cxt) {
+
+  }
 }

@@ -1,32 +1,38 @@
 <template>
   <div id="app" class="app clearfix">
     <div class="control pull-left">
-      <button>undo</button>
-      <button>redo</button>
+      <button @click="$undo()">undo</button>
+      <button @click="$redo()">redo</button>
     </div>
     <div class="info pull-right"></div>
     <div class="view">
-      <canvas ref="canvas" class="canvas" width="500" height="500"></canvas>
+      <canvas @click="$onCanvasEvent" @mousedown="$onCanvasEvent" @mouseup="$onCanvasEvent" @mousemove="$onCanvasEvent" ref="canvas" class="canvas" width="500" height="500"></canvas>
     </div>
   </div>
 </template>
 
 <script>
 import Editor from './lib/Editor'
+import Line from './module/Line'
+import Point from './module/Point'
+import View from './module/View'
+import LinePainter from './painter/LinePainter'
+
 export default {
   name: 'app',
   data: function () {
-    return {}
+    return {
+
+    }
   },
   created: function () {
     this._editor = Editor.getIns()
-    this._editor.on('change', () => {
-      this._repaint()
-    })
   },
   mounted: function () {
     this._canvas = this.$refs.canvas
-    this._cxt = this._canvas.getContext('2d')
+    this._offset = this._getOffset(this._canvas)
+    this._view = View.getIns(this._canvas)
+    this._painter = new LinePainter()
   },
   methods: {
     $undo: function () {
@@ -35,11 +41,28 @@ export default {
     $redo: function () {
       this._editor.redo()
     },
-    _repaint: function () {
-      this._cxt.clearRect(0, 0, 500, 500)
-      this._editor.getData().search(ele => {
-        ele.paint(cxt)
-      })
+    $onCanvasEvent: function (event) {
+      var {clientX, clientY} = event
+      if (this._painter) {
+        this._painter.onCanvasEvent({
+          x: clientX - this._offset.x,
+          y: clientY - this._offset.y,
+          event,
+          type: event.type
+        })
+      }
+    },
+    _getOffset: function (node) {
+      var ret = {
+        x: 0,
+        y: 0
+      }
+      while(node) {
+        ret.x += node.offsetLeft
+        ret.y += node.offsetTop
+        node = ret.offsetParent
+      }
+      return ret
     }
   }
 }
@@ -75,5 +98,6 @@ export default {
     height: 500px;
     width: 500px;
     background: #fff;
+    cursor: default;
   }
 </style>

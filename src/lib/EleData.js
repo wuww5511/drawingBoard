@@ -1,10 +1,13 @@
-export default class EleData {
+import EventEmitter from 'events'
+
+export default class EleData extends EventEmitter{
   constructor () {
+    super()
     this._eles = this._initData()
   }
 
   // @abstract
-  add (data) {
+  add (ele) {
 
   }
 
@@ -18,11 +21,20 @@ export default class EleData {
 
   }
 
+  // @abstract
+  each (callback) {
+
+  }
+
   update (id, data) {
     var res = false
     this.search(id, ele => {
       if (ele) {
         ele.update(data)
+        this.emit('change', {
+          action: 'update',
+          ele
+        })
         res = true
       }
     })
@@ -50,7 +62,4 @@ export default class EleData {
   _add (data) {
 
   }
-
-
-
 }
