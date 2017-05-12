@@ -13,10 +13,9 @@
 
 <script>
 import Editor from './lib/Editor'
-import Line from './module/Line'
-import Point from './module/Point'
 import View from './module/View'
 import LinePainter from './painter/LinePainter'
+import CirclePainter from './painter/CirclePainter'
 
 export default {
   name: 'app',
@@ -32,7 +31,7 @@ export default {
     this._canvas = this.$refs.canvas
     this._offset = this._getOffset(this._canvas)
     this._view = View.getIns(this._canvas)
-    this._painter = new LinePainter()
+    this._painter = new CirclePainter()
   },
   methods: {
     $undo: function () {
