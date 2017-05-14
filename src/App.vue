@@ -3,6 +3,9 @@
     <div class="control pull-left">
       <button @click="$undo()">undo</button>
       <button @click="$redo()">redo</button>
+      <button @click="$setPainter('line')">line</button>
+      <button @click="$setPainter('circle')">circle</button>
+      <button @click="$setPainter('rect')">rect</button>
     </div>
     <div class="info pull-right"></div>
     <div class="view">
@@ -14,8 +17,7 @@
 <script>
 import Editor from './lib/Editor'
 import View from './module/View'
-import LinePainter from './painter/LinePainter'
-import CirclePainter from './painter/CirclePainter'
+import painterMap from './util/painter'
 
 export default {
   name: 'app',
@@ -31,7 +33,7 @@ export default {
     this._canvas = this.$refs.canvas
     this._offset = this._getOffset(this._canvas)
     this._view = View.getIns(this._canvas)
-    this._painter = new CirclePainter()
+    this.$setPainter('line')
   },
   methods: {
     $undo: function () {
@@ -49,6 +51,14 @@ export default {
           event,
           type: event.type
         })
+      }
+    },
+    $setPainter: function (type) {
+      var Painter = painterMap.get(type)
+      if (Painter) {
+        this._painter = new Painter()
+      } else {
+        this._painter = null
       }
     },
     _getOffset: function (node) {

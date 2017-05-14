@@ -1,8 +1,8 @@
 import Painter from './Painter'
 import Point from '@/module/Point'
-import Line from '@/module/Line'
+import Rect from '@/module/Rect'
 
-export default class LinePainter extends Painter{
+export default class RectPainter extends Painter{
   constructor () {
     super()
     this._lastPoint = null
@@ -10,16 +10,16 @@ export default class LinePainter extends Painter{
 
   _mousemove (x, y, event) {
     if (this._lastPoint) {
-      this._lastLine = new Line({
+      this._lastRect = new Rect({
         start: this._lastPoint,
         end: new Point(x, y)
       })
 
-      var lastLine = this._lastLine
+      var lastRect = this._lastRect
 
       this._task.update(() => {
         this._view.repaint()
-        lastLine.paint(this._cxt)
+        lastRect.paint(this._cxt)
       })
     }
   }
@@ -30,12 +30,12 @@ export default class LinePainter extends Painter{
 
   _mouseup (x, y, event) {
     this._lastPoint = null
-    if (this._lastLine) {
-      var lastLine = this._lastLine
+    if (this._lastRect) {
+      var lastRect = this._lastRect
       this._task.update(() => {
-        this._editor.add(lastLine)
+        this._editor.add(lastRect)
       })
     }
-    this._lastLine = null
+    this._lastRect = null
   }
 }
