@@ -14,6 +14,7 @@
   "dependencies": {
     "bootstrap": "^3.3.7",
     "events": "^1.1.1",
+    "frameloop": "^1.0.0",
     "vue": "^2.2.6"
   },
   "devDependencies": {
